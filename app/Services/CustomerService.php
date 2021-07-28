@@ -5,7 +5,6 @@ namespace App\Services;
 use Illuminate\Support\Collection;
 use App\Services\Country\CountryFactory;
 use App\Repositories\Customers\CustomerRepositoryInterface as CustomerInterface;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator as PaginatedCollection;
 
 class CustomerService
 {
@@ -19,7 +18,7 @@ class CustomerService
     }
 
     /**
-     * set country properties for given customer
+     * set country and state attributes
      *
      * @param $customer
      *
@@ -34,7 +33,14 @@ class CustomerService
         }
     }
 
-    public function setStateAttribute($customer)
+    /**
+     * set state attribute
+     *
+     * @param $customer
+     *
+     * @return void
+     */
+    public function setStateAttribute($customer):void
     {
         $countryObject      = $this->countryFactory->createFromCountryName($customer->country, $customer->phone);
         $customer->state    = $countryObject->getState();
@@ -54,13 +60,17 @@ class CustomerService
     
     /**
      * get all customers with country attrbuties
+     * filtered by country or state if provided
+     *
+     * @param null|string $country
+     * @param null|bool $state
      *
      * @return Collection
      */
-    public function indexWithPaggination(?string $country, ?bool $state):Collection
+    public function index(?string $country, ?bool $state):Collection
     {
         $response  = collect();
-        $customers = $this->customerRepository->pagginate($country);
+        $customers = $this->customerRepository->index($country);
 
         foreach ($customers as $customer) {
             $customer->country  = $country ?? null;

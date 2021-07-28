@@ -15,7 +15,7 @@ class SqliteCustomerRepository implements CustomerInterface
      *
      * @return Collection
      */
-    public function pagginate(?string $country):Collection
+    public function index(?string $country):Collection
     {
         return Customer::country($country)->get();
     }

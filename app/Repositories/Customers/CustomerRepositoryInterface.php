@@ -5,5 +5,5 @@ use Illuminate\Support\Collection;
 
 interface CustomerRepositoryInterface
 {
-    public function pagginate(?string $country):Collection;
+    public function index(?string $country):Collection;
 }

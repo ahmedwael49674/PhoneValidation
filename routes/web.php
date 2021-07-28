@@ -1,3 +1,4 @@
 <?php
 
-$router->get('/', "CustomersController@index");
+$router->get('/', "HomeController@index");
+$router->get('/api/customers/', "CustomersController@index");

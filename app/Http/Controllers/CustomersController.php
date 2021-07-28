@@ -17,14 +17,13 @@ class CustomersController extends Controller
     /**
      * get all customers with country attrbuties
      *
-     * @return view
+     * @param FilterCustomer $request
+     *
+     * @return json
      */
     public function index(FilterCustomer $request)
     {
-        $customers = $this->customerService->indexWithPaggination($request->country, $request->state);
-        // return response()->json($customers);
-        return view('index', [
-            'customers' => $customers
-        ]);
+        $customers = $this->customerService->index($request->country, $request->state);
+        return response()->json($customers);
     }
 }
