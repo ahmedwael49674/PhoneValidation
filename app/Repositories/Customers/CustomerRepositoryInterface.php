@@ -1,9 +1,9 @@
 <?php
 namespace App\Repositories\Customers;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 interface CustomerRepositoryInterface
 {
-    public function index():Collection;
+    public function pagginate(?string $country):Collection;
 }

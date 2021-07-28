@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\CustomerService;
+use App\Http\Requests\FilterCustomer;
 
 class CustomersController extends Controller
 {
@@ -18,10 +19,12 @@ class CustomersController extends Controller
      *
      * @return view
      */
-    public function index()
+    public function index(FilterCustomer $request)
     {
-        $customers = $this->customerService->index();
-
-        return response()->json($customers);
+        $customers = $this->customerService->indexWithPaggination($request->country, $request->state);
+        // return response()->json($customers);
+        return view('index', [
+            'customers' => $customers
+        ]);
     }
 }

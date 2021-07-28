@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Collection;
 use App\Services\Country\CountryFactory;
 use App\Repositories\Customers\CustomerRepositoryInterface as CustomerInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator as PaginatedCollection;
 
 class CustomerService
 {
@@ -24,13 +25,31 @@ class CustomerService
      *
      * @return void
      */
+    public function setCountryAndStateAttributes($customer):void
+    {
+        $countryObject      = $this->countryFactory->createFromPhoneNum($customer->phone);
+        if ($countryObject) {
+            $customer->country  = $countryObject->getName();
+            $customer->state    = $countryObject->getState();
+        }
+    }
+
+    public function setStateAttribute($customer)
+    {
+        $countryObject      = $this->countryFactory->createFromCountryName($customer->country, $customer->phone);
+        $customer->state    = $countryObject->getState();
+    }
+
+    /**
+     * set country properties for given customer
+     *
+     * @param $customer
+     *
+     * @return void
+     */
     public function setCountryAttributes($customer):void
     {
-        $country            = $this->countryFactory->create($customer->phone);
-        if ($country) {
-            $customer->country  = $country->getName();
-            $customer->state    = $country->getState();
-        }
+        filled($customer->country) ? $this->setStateAttribute($customer) : $this->setCountryAndStateAttributes($customer);
     }
     
     /**
@@ -38,12 +57,20 @@ class CustomerService
      *
      * @return Collection
      */
-    public function index():Collection
+    public function indexWithPaggination(?string $country, ?bool $state):Collection
     {
-        $customers = $this->customerRepository->index();
+        $response  = collect();
+        $customers = $this->customerRepository->pagginate($country);
+
         foreach ($customers as $customer) {
+            $customer->country  = $country ?? null;
             $this->setCountryAttributes($customer);
+            if (filled($state) && $customer->state != $state) {
+                continue;
+            }
+            $response[] = $customer;
         }
-        return $customers;
+
+        return $response;
     }
 }

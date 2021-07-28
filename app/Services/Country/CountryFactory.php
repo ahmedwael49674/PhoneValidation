@@ -2,11 +2,10 @@
 
 namespace App\Services\Country;
 
+use App\Services\Country\Country;
+
 class CountryFactory
 {
-    const Countries     = ["237" => "Cameroon", "251" => "Ethiopia", "212" => "Morocco", "258" => "Mozambique", "256" => "Uganda"];
-    const CountryCodes  = ["237" , "251" , "212" , "258" , "256" ];
-
     /**
      * retrun the country code form phone number
      *
@@ -28,13 +27,27 @@ class CountryFactory
      *
      * @return null|object
      */
-    public function create(String $phoneNum):?Object
+    public function createFromPhoneNum(String $phoneNum):?Object
     {
         $countryCode = $this->getCountryCode($phoneNum);
-        if (in_array($countryCode, self::CountryCodes)) {
-            $class =  "App\\Services\\Country\\Countries\\" . self::Countries[$countryCode];
+        if (in_array($countryCode, Country::CountryCodes)) {
+            $class =  "App\\Services\\Country\\Countries\\" . Country::Countries[$countryCode];
             return new $class($phoneNum);
         }
         return null;
+    }
+
+    /**
+     * using polymorphism and abstract factory design pattern
+     * create an object from country classess
+     *
+     * @param String $phoneNum
+     *
+     * @return null|object
+     */
+    public function createFromCountryName(String $countryName, String $phoneNum):Object
+    {
+        $class =  "App\\Services\\Country\\Countries\\" . $countryName;
+        return new $class($phoneNum);
     }
 }

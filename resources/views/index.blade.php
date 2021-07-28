@@ -16,26 +16,28 @@
 
             <h1>Phone numbers</h1>
 
-            <div class="mt-5 row">
+            <div class="mt-3 row">
                 <div class="col">
 
-                    <select class="custom-select" v-model="countryList">
+                    <select class="custom-select" id="country" onchange="filter()">
                         <option value="null" selected>Select Country</option>
-                        <option v-for="country in countries" v-bind:value="country.id">
-                            @{{country.name}}
-                        </option>
+                        <option value="Cameroon">Cameroon</option>
+                        <option value="Ethiopia">Ethiopia</option>
+                        <option value="Morocco">Morocco</option>
+                        <option value="Mozambique">Mozambique</option>
+                        <option value="Uganda">Uganda</option>
                     </select>
                 </div>
 
                 <div class="col">
-                    <select class="custom-select" v-model="validatetyList">
+                    <select class="custom-select" id="isVaild" onchange="filter()">
                         <option value="null" selected>Vlidate Phone number</option>
                         <option value="1">Valid</option>
                         <option value="0">Not valid</option>
                     </select>
                 </div>
-                
-                <table class="table mt-5" v-if="customers">
+
+                <table class="table mt-5">
                     <thead>
                         <tr>
                             <th scope="col">Country</th>
@@ -45,56 +47,28 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="customer in customers">
-                            <td>@{{customer.country}}</td>
-                            <td>@{{customer.state ? "OK" : "NOK"}}</td>
-                            <td>@{{customer.name}}</td>
-                            <td>@{{customer.phone}}</td>
+                        @foreach($customers as $customer)
+                        <tr>
+                            <td>{{$customer->country}}</td>
+                            <td>{{$customer->state ? "OK" : "NOK"}}</td>
+                            <td>{{$customer->name}}</td>
+                            <td>{{$customer->phone}}</td>
                         </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
+{{--{{$customers->links()}}--}}
+
 </body>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.7/vue.min.js"></script>
 <script>
-    const countries = [{
-            id: 1,
-            name: "Cameroon"
-        }, {
-            id: 2,
-            name: "Ethiopia"
-        }, {
-            id: 3,
-            name: "Morocco"
-        }, {
-            id: 3,
-            name: "Mozambique"
-        },
-        {
-            id: 3,
-            name: "Uganda"
-        }
-    ];
+    function filter(){
+        let country = document.getElementById('country').value;
+        let isVaild = document.getElementById('isVaild').value;
+        
+    }
 
-    Vue.config.devtools = true
-    var vm = new Vue({
-        el: '#app',
-        data: {
-            countryList: null,
-            validatetyList: null,
-            customers: [],
-        },
-        methods: {
-            fetchData(){
-                fetch('{{url("api/customers")}}').then(response => response.json()).then(data => (this.customers = data));
-            }
-        },
-        created() {
-            this.fetchData();
-        }
-    });
 </script>
 
 </html>
