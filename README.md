@@ -41,8 +41,9 @@ https://serverlivetest49674.000webhostapp.com/
 
 ## How to run
 1. Clone the project.
-2. Set up .env (copy .env.example file to .env)
-3. php -S localhost:8000 -t public
+2. Run `composer install`.
+3. Set up .env (copy .env.example file to .env)
+4. Run `php -S localhost:8000 -t public`
 
 ## API's
 1. GET `/api/customers/` : index all customers in database with computed attribute state.
